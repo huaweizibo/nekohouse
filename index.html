@@ -333,6 +333,39 @@
       pointer-events:none;
     }
     #toast.show{opacity:1}
+    /* 手机弹窗优化 */
+@media (max-width: 640px){
+
+  .modal{
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .modal-card{
+    height: 100vh;
+    border-radius: 0;
+    overflow-y: auto;
+  }
+
+  .modal-media{
+    max-height: 45vh;   /* 限制图片高度 */
+  }
+
+  .modal-media img{
+    object-fit: cover;
+  }
+
+  .modal-body{
+    padding-bottom: 80px;  /* 给底部按钮留空间 */
+  }
+
+  .actions{
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding-top: 10px;
+  }
+}
   </style>
 </head>
 
