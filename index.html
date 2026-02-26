@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AluAlu猫猫舍</title>
+  <meta name="description" content="猫猫展示：清晰卡片、状态标识、编号与可爱名字。" />
+  <style>
+    :root{
+      --bg1:#fff7fb;
+      --bg2:#ffeef6;
+      --card:#ffffff;
+      --text:#5b3446;
+      --muted:#b67a92;
+      --line:#ffd7e6;
+      --shadow: 0 14px 34px rgba(255, 168, 200, .28);
+      --radius: 18px;
+
+      --pink:#ff6fa5;
+      --orange:#ffb347;
+      --graypink:#c9a0b8;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text);
+    }
+
+    .container{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 14px 60px;
+    }
+
+    /* 顶部：更简洁 */
+    .hero{
+      padding: 18px 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg,#ffd6e7,#ffeaf4);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.7);
+    }
+    .hero-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .mark{
+      width:40px;height:40px;
+      border-radius: 14px;
+      display:grid;place-items:center;
+      background: #ffffffcc;
+      border:1px solid var(--line);
+      box-shadow: 0 10px 22px rgba(255, 168, 200, .22);
+      font-size: 18px;
+    }
+    .hero h1{
+      margin: 10px 0 2px;
+      font-size: 24px;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .contact{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background:#ffffffcc;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .contact b{color: var(--text)}
+
+    /* 分类按钮：更可爱、更小 */
+    .controls{
+      display:flex;
+      justify-content:center;
+      margin: 14px 0 10px;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .tab{
+      border:none;
+      cursor:pointer;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: #ffe3ef;
+      color: #c05486;
+      font-size: 13px;
+      font-weight: 700;
+      transition:.18s;
+      box-shadow: 0 10px 20px rgba(255, 168, 200, .18);
+    }
+    .tab:hover{transform: translateY(-1px)}
+    .tab.active{
+      background: #ffb6d2;
+      color:#fff;
+    }
+
+    /* 网格：手机友好 */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns: 1fr;}
+      .hero h1{font-size: 22px;}
+      .contact{width:100%; justify-content:center;}
+    }
+
+    /* 卡片：更简洁 */
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 215, 230, .7);
+      transition:.18s;
+      cursor:pointer;
+    }
+    .card:hover{transform: translateY(-3px)}
+    .media{
+      position:relative;
+      aspect-ratio: 4 / 3;
+      background:#fff;
+    }
+    .media img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    /* 状态标签：可爱胶囊 */
+    .badge{
+      position:absolute;
+      top:10px; left:10px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      color:#fff;
+      box-shadow: 0 12px 22px rgba(0,0,0,.12);
+    }
+    .badge.for-sale{ background: var(--pink); }
+    .badge.reserved{ background: var(--orange); }
+    .badge.sold{ background: var(--graypink); }
+
+    /* 右上角编号：更轻 */
+    .stamp{
+      position:absolute;
+      top:10px; right:10px;
+      padding: 7px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color:#a84f76;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,215,230,.8);
+      backdrop-filter: blur(6px);
+    }
+
+    .content{
+      padding: 12px 14px 14px;
+    }
+    .name{
+      font-size: 16px;
+      font-weight: 900;
+      margin: 0 0 6px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .mini{
+      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .mini b{color: var(--text)}
+
+    /* Footer */
+    .foot{
+      margin-top: 22px;
+      color: rgba(182,122,146,.9);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    /* Modal：更简洁（点空白关闭，只有一个返回按钮） */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+      z-index: 999;
+    }
+    .modal.open{display:flex;}
+    .modal-card{
+      width: min(900px, 100%);
+      background: #fff;
+      border-radius: 22px;
+      overflow:hidden;
+      box-shadow: 0 22px 70px rgba(0,0,0,.35);
+      border: 1px solid rgba(255,215,230,.9);
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+    }
+    @media (max-width: 860px){
+      .modal-card{grid-template-columns: 1fr;}
+    }
+    .modal-media{
+      position:relative;
+      background:#fff;
+      min-height: 280px;
+    }
+    .modal-media img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .modal-body{
+      padding: 14px 14px 16px;
+    }
+    .modal-title{
+      margin:0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .modal-meta{
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+    .kv{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .box{
+      border:1px solid rgba(255,215,230,.9);
+      background: #fff7fb;
+      border-radius: 14px;
+      padding: 10px 10px;
+    }
+    .box small{color: var(--muted)}
+    .box b{display:block; margin-top:4px; color: var(--text)}
+    .desc{
+      margin: 12px 0 0;
+      color: rgba(91,52,70,.9);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .actions{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .btn.primary{
+      background: var(--pink);
+      color:#fff;
+      box-shadow: 0 14px 26px rgba(255,111,165,.25);
+    }
+    .btn.ghost{
+      background:#ffe3ef;
+      color:#a84f76;
+    }
+
+    /* Toast：粉色 */
+    #toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,215,230,.9);
+      background:#ffffffee;
+      color:#a84f76;
+      box-shadow: 0 18px 55px rgba(0,0,0,.18);
+      font-size:13px;
+      z-index: 9999;
+      opacity:0;
+      transition:.18s;
+      pointer-events:none;
+    }
+    #toast.show{opacity:1}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="logo">
+          <div class="mark">🐾</div>
+          <div>
+            <div style="font-weight:900;">AluAlu猫猫舍</div>
+            <div style="color:var(--muted); font-size:12.5px;">点击猫猫卡片查看大图与详情</div>
+          </div>
+        </div>
+        <div class="contact">💬 <b>微信</b>：huawei1970478109</div>
+      </div>
+      <h1 style="display:none;">AluAlu猫猫舍</h1>
+      <p style="display:none;">每只猫都有独立卡片：点击卡片可放大查看详情大图。</p>
+    </section>
+
+    <div class="controls">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-filter="all">全部</button>
+        <button class="tab" data-filter="for-sale">販売中</button>
+        <button class="tab" data-filter="reserved">商談中</button>
+        <button class="tab" data-filter="sold">已售出</button>
+      </div>
+    </div>
+
+    <!-- ✅ 已去掉搜索框 -->
+    <section class="grid" id="grid" aria-label="猫咪列表"></section>
+
+    <div class="foot">
+      © <span id="year"></span> AluAlu. 展示信息仅供参考，以沟通确认为准。
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <div class="modal-media">
+        <span class="badge for-sale" id="mBadge">販売中</span>
+        <div class="stamp" id="mId">CAT-001</div>
+        <img id="mImg" src="" alt="" />
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-title" id="mName">小奶糖</h2>
+        <div class="modal-meta">
+          品种：<b id="mBreed">-</b>　
+          性别：<b id="mGender">-</b>　
+          生日：<b id="mBirth">-</b>
+        </div>
+
+        <div class="kv">
+          <div class="box">
+            <small>状态</small>
+            <b id="mStatusText">-</b>
+          </div>
+          <div class="box">
+            <small>参考价格</small>
+            <b id="mPrice">-</b>
+          </div>
+          <div class="box">
+            <small>所在地</small>
+            <b id="mCity">-</b>
+          </div>
+          <div class="box">
+            <small>性格</small>
+            <b id="mPersonality">-</b>
+          </div>
+        </div>
+
+        <p class="desc" id="mDesc"></p>
+
+        <div class="actions">
+          <button class="btn primary" id="mContact">复制咨询文案</button>
+          <button class="btn ghost" id="mBack">返回</button>
+        </div>
+
+        <div style="margin-top:10px; color:var(--muted); font-size:12.5px; line-height:1.6;">
+          咨询文案：<br/>
+          “你好，我想咨询 <b id="mId2">CAT-001</b>《<b id="mName2">小奶糖</b>》，请问目前状态与可预约时间？”
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const pets = [
+      {
+        id: "CAT-001",
+        name: "小奶糖",
+        status: "for-sale",
+        statusText: "販売中",
+        badgeClass: "for-sale",
+        breed: "曼基康",
+        gender: "女孩子",
+        birth: "2025-12-20",
+        city: "千叶",
+        price: "¥198,000",
+        personality: "超黏人 / 爱呼噜",
+        date: "2026-02-10",
+        image: "1.PNG",
+        desc: "奶呼呼的小短腿，特别喜欢被摸下巴。适合想要陪伴感强的家庭。"
+      },
+      {
+        id: "CAT-002",
+        name: "星星糖",
+        status: "reserved",
+        statusText: "商談中",
+        badgeClass: "reserved",
+        breed: "苏格兰折耳",
+        gender: "男孩子",
+        birth: "2025-12-28",
+        city: "东京",
+        price: "¥210,000",
+        personality: "胆子大 / 爱玩逗猫棒",
+        date: "2026-02-12",
+        image: "2.PNG",
+        desc: "精力充沛的开心果，见人就跑来打招呼。商谈中，仍可登记候补。"
+      },
+      {
+        id: "CAT-003",
+        name: "小布丁",
+        status: "for-sale",
+        statusText: "販売中",
+        badgeClass: "for-sale",
+        breed: "英短",
+        gender: "女孩子",
+        birth: "2026-01-05",
+        city: "埼玉",
+        price: "¥168,000",
+        personality: "安静 / 很会躺平",
+        date: "2026-02-18",
+        image: "3.PNG",
+        desc: "安静温柔的小圆脸，适合喜欢安定氛围、工作忙但想养猫的人。"
+      },
+      {
+        id: "CAT-004",
+        name: "云朵",
+        status: "sold",
+        statusText: "已售出",
+        badgeClass: "sold",
+        breed: "布偶",
+        gender: "男孩子",
+        birth: "2025-11-30",
+        city: "神奈川",
+        price: "—",
+        personality: "抱抱党 / 超松弛",
+        date: "2026-01-20",
+        image: "4.PNG",
+        desc: "已找到新家，祝福云朵猫猫在新家庭健康快乐。"
+      },
+      {
+        id: "CAT-005",
+        name: "棉花糖",
+        status: "for-sale",
+        statusText: "販売中",
+        badgeClass: "for-sale",
+        breed: "美短",
+        gender: "男孩子",
+        birth: "2026-01-12",
+        city: "千叶",
+        price: "¥155,000",
+        personality: "温柔 / 爱跟脚",
+        date: "2026-02-22",
+        image: "5.PNG",
+        desc: "跟脚小尾巴，喜欢在你旁边躺着。适合家庭陪伴型饲养。"
+      },
+      {
+        id: "CAT-006",
+        name: "小月亮",
+        status: "reserved",
+        statusText: "商談中",
+        badgeClass: "reserved",
+        breed: "曼基康",
+        gender: "女孩子",
+        birth: "2026-01-18",
+        city: "东京",
+        price: "¥205,000",
+        personality: "粘人 / 会踩奶",
+        date: "2026-02-24",
+        image: "6.PNG",
+        desc: "踩奶小天使，特别依恋人。商谈中，想要的可以先咨询排队。"
+      },
+      {
+        id: "CAT-007",
+        name: "小太阳",
+        status: "reserved",
+        statusText: "商談中",
+        badgeClass: "reserved",
+        breed: "曼基康",
+        gender: "女孩子",
+        birth: "2026-01-18",
+        city: "东京",
+        price: "¥205,000",
+        personality: "粘人 / 会踩奶",
+        date: "2026-02-24",
+        image: "7.PNG",
+        desc: "踩奶小天使，特别依恋人。商谈中，想要的可以先咨询排队。"
+      },
+      {
+        id: "CAT-008",
+        name: "小哈子",
+        status: "reserved",
+        statusText: "商談中",
+        badgeClass: "reserved",
+        breed: "曼基康",
+        gender: "女孩子",
+        birth: "2026-01-18",
+        city: "东京",
+        price: "¥205,000",
+        personality: "粘人 / 会飞",
+        date: "2026-02-24",
+        image: "8.PNG",
+        desc: "踩奶小天使，特别依恋人。商谈中，想要的可以先咨询排队。"
+      },
+    ];
+
+    const grid = document.getElementById("grid");
+    const tabs = document.getElementById("tabs");
+
+    const modal = document.getElementById("modal");
+    const mImg = document.getElementById("mImg");
+    const mBadge = document.getElementById("mBadge");
+    const mId = document.getElementById("mId");
+    const mId2 = document.getElementById("mId2");
+    const mName = document.getElementById("mName");
+    const mName2 = document.getElementById("mName2");
+    const mBreed = document.getElementById("mBreed");
+    const mGender = document.getElementById("mGender");
+    const mBirth = document.getElementById("mBirth");
+    const mCity = document.getElementById("mCity");
+    const mPrice = document.getElementById("mPrice");
+    const mPersonality = document.getElementById("mPersonality");
+    const mDesc = document.getElementById("mDesc");
+    const mStatusText = document.getElementById("mStatusText");
+    const mBack = document.getElementById("mBack");
+    const mContact = document.getElementById("mContact");
+    const toastEl = document.getElementById("toast");
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    let currentFilter = "all";
+
+    function escapeHTML(str){
+      return String(str).replace(/[&<>"']/g, s => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[s]));
+    }
+
+    function statusLabel(status){
+      if(status === "for-sale") return "販売中";
+      if(status === "reserved") return "商談中";
+      return "已售出";
+    }
+
+    function render(){
+      const list = pets.filter(p => (currentFilter === "all") ? true : p.status === currentFilter);
+
+      grid.innerHTML = list.map(p => `
+        <article class="card" data-id="${escapeHTML(p.id)}" tabindex="0" aria-label="${escapeHTML(p.name)}">
+          <div class="media">
+            <span class="badge ${escapeHTML(p.badgeClass)}">${escapeHTML(p.statusText || statusLabel(p.status))}</span>
+            <div class="stamp">${escapeHTML(p.id)}</div>
+            <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.id)} ${escapeHTML(p.name)}" loading="lazy" />
+          </div>
+          <div class="content">
+            <div class="name">${escapeHTML(p.name)}</div>
+            <div class="sub">${escapeHTML(p.breed)} · ${escapeHTML(p.gender)} · ${escapeHTML(p.birth)}</div>
+            <div class="mini">
+              <span>地点：<b>${escapeHTML(p.city)}</b></span>
+              <span><b>${escapeHTML(p.price)}</b></span>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      grid.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => openModal(card.getAttribute("data-id")));
+        card.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            openModal(card.getAttribute("data-id"));
+          }
+        });
+      });
+    }
+
+    function openModal(id){
+      const p = pets.find(x => x.id === id);
+      if(!p) return;
+
+      mImg.src = p.image;
+      mImg.alt = `${p.id} ${p.name}`;
+      mId.textContent = p.id;
+      mId2.textContent = p.id;
+
+      mName.textContent = p.name;
+      mName2.textContent = p.name;
+
+      mBreed.textContent = p.breed || "-";
+      mGender.textContent = p.gender || "-";
+      mBirth.textContent = p.birth || "-";
+      mCity.textContent = p.city || "-";
+      mPrice.textContent = p.price || "-";
+      mPersonality.textContent = p.personality || "-";
+      mDesc.textContent = p.desc || "";
+
+      mBadge.className = `badge ${p.badgeClass}`;
+      mBadge.textContent = p.statusText || statusLabel(p.status);
+      mStatusText.textContent = p.statusText || statusLabel(p.status);
+
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    async function copyInquiry(){
+      const text = `你好，我想咨询 ${mId.textContent}《${mName.textContent}》，请问目前状态与可预约时间？`;
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("已复制咨询文案 💗");
+      }catch{
+        toast("复制失败（浏览器限制）");
+      }
+    }
+
+    // Tabs
+    tabs.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tab");
+      if(!btn) return;
+      currentFilter = btn.dataset.filter;
+      tabs.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    });
+
+    // Modal actions
+    mBack.addEventListener("click", closeModal);
+    mContact.addEventListener("click", copyInquiry);
+
+    // ✅ 点击遮罩空白处关闭（更简洁）
+    modal.addEventListener("click", (e) => {
+      if(e.target === modal) closeModal();
+    });
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    });
+
+    // Toast
+    let toastTimer = null;
+    function toast(msg){
+      clearTimeout(toastTimer);
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
+    }
+
+    render();
+  </script>
+</body>
+</html>
