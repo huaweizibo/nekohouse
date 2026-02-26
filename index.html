@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AluAlu猫猫舍</title>
   <meta name="description" content="猫猫展示：清晰卡片、状态标识、编号与可爱名字。" />
+
   <style>
     :root{
       --bg1:#fff7fb;
@@ -36,7 +37,7 @@
       padding: 18px 14px 60px;
     }
 
-    /* 顶部：更简洁 */
+    /* 顶部 */
     .hero{
       padding: 18px 18px;
       border-radius: 22px;
@@ -65,17 +66,6 @@
       box-shadow: 0 10px 22px rgba(255, 168, 200, .22);
       font-size: 18px;
     }
-    .hero h1{
-      margin: 10px 0 2px;
-      font-size: 24px;
-      letter-spacing: .2px;
-    }
-    .hero p{
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
     .contact{
       display:flex;
       align-items:center;
@@ -90,7 +80,7 @@
     }
     .contact b{color: var(--text)}
 
-    /* 分类按钮：更可爱、更小 */
+    /* 分类按钮 */
     .controls{
       display:flex;
       justify-content:center;
@@ -120,7 +110,7 @@
       color:#fff;
     }
 
-    /* 网格：手机友好 */
+    /* 网格 */
     .grid{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -132,11 +122,10 @@
     }
     @media (max-width: 640px){
       .grid{grid-template-columns: 1fr;}
-      .hero h1{font-size: 22px;}
       .contact{width:100%; justify-content:center;}
     }
 
-    /* 卡片：更简洁 */
+    /* 卡片 */
     .card{
       background: var(--card);
       border-radius: var(--radius);
@@ -159,7 +148,7 @@
       display:block;
     }
 
-    /* 状态标签：可爱胶囊 */
+    /* 状态标签 */
     .badge{
       position:absolute;
       top:10px; left:10px;
@@ -169,12 +158,13 @@
       font-weight: 800;
       color:#fff;
       box-shadow: 0 12px 22px rgba(0,0,0,.12);
+      z-index: 2;
     }
     .badge.for-sale{ background: var(--pink); }
     .badge.reserved{ background: var(--orange); }
     .badge.sold{ background: var(--graypink); }
 
-    /* 右上角编号：更轻 */
+    /* 编号 */
     .stamp{
       position:absolute;
       top:10px; right:10px;
@@ -186,6 +176,7 @@
       background: rgba(255,255,255,.82);
       border: 1px solid rgba(255,215,230,.8);
       backdrop-filter: blur(6px);
+      z-index: 2;
     }
 
     .content{
@@ -220,7 +211,7 @@
       text-align:center;
     }
 
-    /* Modal：更简洁（点空白关闭，只有一个返回按钮） */
+    /* Modal */
     .modal{
       position:fixed;
       inset:0;
@@ -232,6 +223,7 @@
       z-index: 999;
     }
     .modal.open{display:flex;}
+
     .modal-card{
       width: min(900px, 100%);
       background: #fff;
@@ -241,14 +233,18 @@
       border: 1px solid rgba(255,215,230,.9);
       display:grid;
       grid-template-columns: 1.2fr 1fr;
+      position: relative;
     }
     @media (max-width: 860px){
       .modal-card{grid-template-columns: 1fr;}
     }
+
+    /* ✅ 关键：弹窗图片区域固定高度，避免不同照片比例挤走按钮 */
     .modal-media{
       position:relative;
       background:#fff;
-      min-height: 280px;
+      height: 360px; /* 桌面端固定高度 */
+      overflow:hidden;
     }
     .modal-media img{
       width:100%;
@@ -256,6 +252,7 @@
       object-fit: cover;
       display:block;
     }
+
     .modal-body{
       padding: 14px 14px 16px;
     }
@@ -270,6 +267,7 @@
       font-size: 12.5px;
       line-height: 1.6;
     }
+
     .kv{
       margin-top: 12px;
       display:grid;
@@ -290,6 +288,7 @@
       font-size: 13px;
       line-height: 1.65;
     }
+
     .actions{
       margin-top: 12px;
       display:flex;
@@ -314,7 +313,30 @@
       color:#a84f76;
     }
 
-    /* Toast：粉色 */
+    /* ✅ 左上角固定“返回”圆按钮（永远能退出） */
+    .m-float-back{
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,215,230,.95);
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 50;
+      box-shadow: 0 14px 26px rgba(0,0,0,.18);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-size: 18px;
+      color: #a84f76;
+    }
+    .m-float-back:active{transform: scale(.98);}
+
+    /* Toast */
     #toast{
       position:fixed;
       left:50%;
@@ -333,39 +355,49 @@
       pointer-events:none;
     }
     #toast.show{opacity:1}
-    /* 手机弹窗优化 */
-@media (max-width: 640px){
 
-  .modal{
-    align-items: flex-start;
-    padding: 0;
-  }
+    /* ✅ 手机弹窗：图片固定高度 + 内容可滚动 + 按钮吸底（iOS稳） */
+    @media (max-width: 640px){
+      .modal{
+        align-items: stretch;
+        justify-content: stretch;
+        padding: 0;
+      }
 
-  .modal-card{
-    height: 100vh;
-    border-radius: 0;
-    overflow-y: auto;
-  }
+      .modal-card{
+        height: 100dvh;              /* iOS更稳 */
+        height: 100vh;               /* fallback */
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-  .modal-media{
-    max-height: 45vh;   /* 限制图片高度 */
-  }
+      .modal-media{
+        height: 42vh;                /* 手机端强制统一 */
+        flex: 0 0 auto;
+      }
 
-  .modal-media img{
-    object-fit: cover;
-  }
+      .modal-body{
+        flex: 1 1 auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+      }
 
-  .modal-body{
-    padding-bottom: 80px;  /* 给底部按钮留空间 */
-  }
+      .actions{
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+        border-top: 1px solid rgba(255,215,230,.75);
+      }
 
-  .actions{
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding-top: 10px;
-  }
-}
+      .m-float-back{
+        top: calc(10px + env(safe-area-inset-top));
+        left: 10px;
+      }
+    }
   </style>
 </head>
 
@@ -382,8 +414,6 @@
         </div>
         <div class="contact">💬 <b>微信</b>：huawei1970478109</div>
       </div>
-      <h1 style="display:none;">AluAlu猫猫舍</h1>
-      <p style="display:none;">每只猫都有独立卡片：点击卡片可放大查看详情大图。</p>
     </section>
 
     <div class="controls">
@@ -395,7 +425,6 @@
       </div>
     </div>
 
-    <!-- ✅ 已去掉搜索框 -->
     <section class="grid" id="grid" aria-label="猫咪列表"></section>
 
     <div class="foot">
@@ -406,11 +435,15 @@
   <!-- Modal -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-card" role="document">
+      <!-- ✅ 固定返回圆按钮 -->
+      <button class="m-float-back" id="mFloatBack" aria-label="返回">←</button>
+
       <div class="modal-media">
         <span class="badge for-sale" id="mBadge">販売中</span>
         <div class="stamp" id="mId">CAT-001</div>
         <img id="mImg" src="" alt="" />
       </div>
+
       <div class="modal-body">
         <h2 class="modal-title" id="mName">小奶糖</h2>
         <div class="modal-meta">
@@ -606,6 +639,7 @@
     const mDesc = document.getElementById("mDesc");
     const mStatusText = document.getElementById("mStatusText");
     const mBack = document.getElementById("mBack");
+    const mFloatBack = document.getElementById("mFloatBack");
     const mContact = document.getElementById("mContact");
     const toastEl = document.getElementById("toast");
 
@@ -698,7 +732,18 @@
         await navigator.clipboard.writeText(text);
         toast("已复制咨询文案 💗");
       }catch{
-        toast("复制失败（浏览器限制）");
+        // fallback
+        try{
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+          toast("已复制咨询文案 💗");
+        }catch{
+          toast("复制失败（浏览器限制）");
+        }
       }
     }
 
@@ -714,9 +759,10 @@
 
     // Modal actions
     mBack.addEventListener("click", closeModal);
+    mFloatBack.addEventListener("click", closeModal);
     mContact.addEventListener("click", copyInquiry);
 
-    // ✅ 点击遮罩空白处关闭（更简洁）
+    // 点击遮罩空白关闭
     modal.addEventListener("click", (e) => {
       if(e.target === modal) closeModal();
     });
